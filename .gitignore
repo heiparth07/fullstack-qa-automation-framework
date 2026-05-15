@@ -1,0 +1,27 @@
+node_modules/
+dist/
+build/
+.env
+*.local
+
+# Test outputs
+coverage/
+test-results/
+playwright-report/
+blob-report/
+k6-output/
+tests/security/reports/*.html
+tests/security/reports/*.json
+
+# Docker
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

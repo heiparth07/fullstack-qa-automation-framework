@@ -1,0 +1,50 @@
+services:
+  postgres:
+    environment:
+      POSTGRES_DB: taskmanager_test
+
+  backend:
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/taskmanager_test
+      NODE_ENV: test
+
+  test-runner:
+    build:
+      context: ..
+      dockerfile: tests/Dockerfile
+    environment:
+      API_BASE_URL: http://backend:3001
+      FRONTEND_URL: http://frontend:80
+    depends_on:
+      backend:
+        condition: service_healthy
+      frontend:
+        condition: service_started
+    volumes:
+      - ../test-results:/app/test-results
+      - ../playwright-report:/app/playwright-report
+
+  k6:
+    image: grafana/k6:latest
+    environment:
+      API_BASE_URL: http://backend:3001
+    volumes:
+      - ../tests/performance:/scripts
+      - ../k6-output:/output
+    depends_on:
+      backend:
+        condition: service_healthy
+    profiles:
+      - performance
+
+  zap:
+    image: ghcr.io/zaproxy/zaproxy:stable
+    command: zap-baseline.py -t http://frontend:80 -c /zap/zap-baseline.conf -J /zap/reports/zap-report.json
+    volumes:
+      - ../tests/security/zap:/zap/wrk:rw
+      - ../tests/security/reports:/zap/reports:rw
+    depends_on:
+      frontend:
+        condition: service_started
+    profiles:
+      - security

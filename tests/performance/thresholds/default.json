@@ -1,0 +1,16 @@
+{
+  "thresholds": {
+    "http_req_duration": {
+      "p95": 500,
+      "p99": 1000,
+      "avg": 200
+    },
+    "http_req_failed": {
+      "rate": 0.01
+    },
+    "http_reqs": {
+      "rate": 50
+    }
+  },
+  "description": "Default performance thresholds: p95 < 500ms, error rate < 1%, throughput > 50 req/s"
+}

@@ -1,0 +1,28 @@
+{
+  "name": "tests",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test:api": "jest --config api/jest.config.ts --runInBand",
+    "test:ui": "playwright test --config ui/playwright.config.ts",
+    "test:ui:headed": "playwright test --config ui/playwright.config.ts --headed",
+    "test:ui:debug": "playwright test --config ui/playwright.config.ts --debug",
+    "test:perf:smoke": "k6 run performance/scripts/smoke.js",
+    "test:perf:load": "k6 run performance/scripts/load.js",
+    "test:perf:stress": "k6 run performance/scripts/stress.js",
+    "test:perf": "k6 run performance/scripts/smoke.js",
+    "test:security:headers": "tsx security/scripts/header-check.ts",
+    "test:security": "npm run test:security:headers",
+    "test:all": "npm run test:api && npm run test:ui && npm run test:perf"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.42.0",
+    "@types/jest": "^29.5.0",
+    "@types/supertest": "^6.0.0",
+    "jest": "^29.7.0",
+    "supertest": "^6.3.0",
+    "ts-jest": "^29.1.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.4.0"
+  }
+}

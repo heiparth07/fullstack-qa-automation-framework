@@ -1,0 +1,104 @@
+name: Security Scan
+
+on:
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 6 * * 1'  # Weekly on Monday at 6 AM UTC
+
+jobs:
+  dependency-audit:
+    name: Dependency Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Backend audit
+        run: cd backend && npm audit --production --audit-level=high
+        continue-on-error: true
+
+      - name: Frontend audit
+        run: cd frontend && npm audit --production --audit-level=high
+        continue-on-error: true
+
+  header-check:
+    name: Security Header Check
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: taskmanager_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Initialize database
+        run: psql -f docker/init-db/01-init.sql
+        env:
+          PGHOST: localhost
+          PGUSER: postgres
+          PGPASSWORD: postgres
+          PGDATABASE: taskmanager_test
+
+      - name: Start backend
+        run: |
+          cd backend && npx tsx src/app.ts &
+          sleep 3
+        env:
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/taskmanager_test
+          PORT: 3001
+          NODE_ENV: test
+          CORS_ORIGIN: http://localhost:3000
+
+      - name: Run header security check
+        run: npm -w tests run test:security:headers
+        env:
+          API_BASE_URL: http://localhost:3001
+
+  zap-baseline:
+    name: OWASP ZAP Baseline
+    runs-on: ubuntu-latest
+    needs: [header-check]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Start application stack
+        run: |
+          docker compose -f docker/docker-compose.yml up -d
+          sleep 15
+
+      - name: ZAP Baseline Scan
+        uses: zaproxy/action-baseline@v0.12.0
+        with:
+          target: 'http://localhost:3000'
+          rules_file_name: 'tests/security/zap/zap-baseline.conf'
+          cmd_options: '-a'
+
+      - name: Tear down
+        if: always()
+        run: docker compose -f docker/docker-compose.yml down
