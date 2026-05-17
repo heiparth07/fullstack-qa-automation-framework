@@ -78,9 +78,14 @@ export class TaskDetailPage extends BasePage {
 
   async changeStatus(newStatus: string) {
     await this.editButton.click();
+    await this.page.waitForSelector('[data-testid="edit-status-select"]');
     await this.editStatusSelect.selectOption(newStatus);
+    const responsePromise = this.page.waitForResponse(
+      (r) => r.url().includes('/api/tasks/') && r.request().method() === 'PUT',
+    );
     await this.saveButton.click();
-    await this.waitForNetworkIdle();
+    await responsePromise;
+    await expect(this.detailStatus).toBeVisible({ timeout: 10000 });
   }
 
   async deleteTask() {

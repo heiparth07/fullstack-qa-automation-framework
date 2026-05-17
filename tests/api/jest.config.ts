@@ -5,7 +5,7 @@ const config: Config = {
   testEnvironment: 'node',
   rootDir: '..',
   testMatch: ['<rootDir>/api/specs/**/*.spec.ts'],
-  setupFilesAfterFramework: ['<rootDir>/api/setup.ts'],
+  setupFilesAfterEnv: ['<rootDir>/api/setup.ts'],
   testTimeout: 10000,
   verbose: true,
 };

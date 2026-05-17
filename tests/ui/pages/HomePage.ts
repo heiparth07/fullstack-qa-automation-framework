@@ -60,8 +60,11 @@ export class HomePage extends BasePage {
     if (priority) {
       await this.prioritySelect.selectOption(priority);
     }
+    const responsePromise = this.page.waitForResponse(
+      (r) => r.url().includes('/api/tasks') && r.request().method() === 'POST',
+    );
     await this.submitButton.click();
-    await this.page.waitForResponse((r) => r.url().includes('/api/tasks') && r.status() === 201);
+    await responsePromise;
     await this.waitForNetworkIdle();
   }
 
