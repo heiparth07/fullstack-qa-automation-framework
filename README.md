@@ -18,7 +18,7 @@ A production-grade test automation framework demonstrating end-to-end quality en
 ## Project Structure
 
 ```
-sdet-portfolio-project/
+fullstack-qa-automation-framework/
 ├── backend/                 # Express REST API (TypeScript)
 │   └── src/
 │       ├── controllers/     # HTTP request handling
