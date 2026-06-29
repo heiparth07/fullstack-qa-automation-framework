@@ -141,9 +141,10 @@ jobs:
 
       - name: Build and serve frontend
         run: |
-          cd frontend && npm run build
-          npx serve -s dist -l 3000 &
-          # Wait until the static server is actually serving before tests run
+          cd frontend && npm run build && cd ..
+          # nginx proxies /api -> backend locally; replicate that in CI so the
+          # SPA's relative '/api' calls reach the backend on :3001.
+          node tests/ci/serve-with-proxy.cjs &
           timeout 60 bash -c 'until curl -sf http://localhost:3000 > /dev/null; do sleep 1; done'
           echo "Frontend is up."
 
