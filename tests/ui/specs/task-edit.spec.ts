@@ -14,7 +14,7 @@ test.describe('Task Editing', () => {
     detailPage = new TaskDetailPage(page);
   });
 
-  test('should edit task title from detail page', async ({ page, request }) => {
+  test('should edit task title from detail page', async ({ request }) => {
     await seedTaskViaApi(request, { title: 'Original Title' });
     await homePage.goto();
     await homePage.clickTaskTitle('Original Title');
