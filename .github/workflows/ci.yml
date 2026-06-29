@@ -65,8 +65,8 @@ jobs:
 
       - name: Start backend
         run: |
-          cd backend && npx tsx src/app.ts &
-          timeout 60 bash -c 'until curl -sf http://localhost:3001/health > /dev/null; do sleep 1; done'
+          cd backend && npm run dev &
+          timeout 60 bash -c 'until curl -sf http://localhost:3001/api/health > /dev/null; do sleep 1; done'
           echo "Backend is up."
         env:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/taskmanager_test
@@ -129,8 +129,9 @@ jobs:
 
       - name: Start backend
         run: |
-          cd backend && npx tsx src/app.ts &
-          timeout 60 bash -c 'until curl -sf http://localhost:3001/health > /dev/null; do sleep 1; done'
+          cd backend && npm run dev &
+          # Wait until the backend is actually accepting requests (no blind sleep)
+          timeout 60 bash -c 'until curl -sf http://localhost:3001/api/health > /dev/null; do sleep 1; done'
           echo "Backend is up."
         env:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/taskmanager_test
@@ -142,6 +143,7 @@ jobs:
         run: |
           cd frontend && npm run build
           npx serve -s dist -l 3000 &
+          # Wait until the static server is actually serving before tests run
           timeout 60 bash -c 'until curl -sf http://localhost:3000 > /dev/null; do sleep 1; done'
           echo "Frontend is up."
 
@@ -209,8 +211,8 @@ jobs:
 
       - name: Start backend
         run: |
-          cd backend && npx tsx src/app.ts &
-          timeout 60 bash -c 'until curl -sf http://localhost:3001/health > /dev/null; do sleep 1; done'
+          cd backend && npm run dev &
+          timeout 60 bash -c 'until curl -sf http://localhost:3001/api/health > /dev/null; do sleep 1; done'
           echo "Backend is up."
         env:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/taskmanager_test
