@@ -66,7 +66,8 @@ jobs:
       - name: Start backend
         run: |
           cd backend && npx tsx src/app.ts &
-          sleep 3
+          timeout 60 bash -c 'until curl -sf http://localhost:3001/health > /dev/null; do sleep 1; done'
+          echo "Backend is up."
         env:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/taskmanager_test
           PORT: 3001
@@ -129,7 +130,8 @@ jobs:
       - name: Start backend
         run: |
           cd backend && npx tsx src/app.ts &
-          sleep 3
+          timeout 60 bash -c 'until curl -sf http://localhost:3001/health > /dev/null; do sleep 1; done'
+          echo "Backend is up."
         env:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/taskmanager_test
           PORT: 3001
@@ -140,7 +142,8 @@ jobs:
         run: |
           cd frontend && npm run build
           npx serve -s dist -l 3000 &
-          sleep 3
+          timeout 60 bash -c 'until curl -sf http://localhost:3000 > /dev/null; do sleep 1; done'
+          echo "Frontend is up."
 
       - name: Run UI tests (Chromium)
         run: npm -w tests run test:ui -- --project=chromium
@@ -207,7 +210,8 @@ jobs:
       - name: Start backend
         run: |
           cd backend && npx tsx src/app.ts &
-          sleep 3
+          timeout 60 bash -c 'until curl -sf http://localhost:3001/health > /dev/null; do sleep 1; done'
+          echo "Backend is up."
         env:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/taskmanager_test
           PORT: 3001

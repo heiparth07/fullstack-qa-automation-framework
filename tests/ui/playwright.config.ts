@@ -37,7 +37,7 @@ export default defineConfig({
   webServer: process.env.CI
   ? undefined
   : {
-      command: 'cd ../../ && npm run docker:up && docker compose -f docker/docker-compose.yml logs -f',
+      command: 'cd ../../ && npm run docker:up',
       url: BASE_URL,
       reuseExistingServer: true,
       timeout: 120000,
