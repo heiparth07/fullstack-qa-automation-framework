@@ -1,4 +1,4 @@
-# SDET Portfolio: Full-Stack Test Automation Framework
+# Full-Stack Test Automation Framework
 
 A production-grade test automation framework demonstrating end-to-end quality engineering across API, UI, performance, and security testing layers — with CI/CD integration and containerized infrastructure.
 
@@ -18,7 +18,7 @@ A production-grade test automation framework demonstrating end-to-end quality en
 ## Project Structure
 
 ```
-sdet-portfolio-project/
+fullstack-qa-automation-framework/
 ├── backend/                 # Express REST API (TypeScript)
 │   └── src/
 │       ├── controllers/     # HTTP request handling
@@ -65,8 +65,8 @@ sdet-portfolio-project/
 
 ```bash
 # Clone and install
-git clone <repo-url>
-cd sdet-portfolio-project
+git clone https://github.com/heiparth07/fullstack-qa-automation-framework.git
+cd fullstack-qa-automation-framework
 bash scripts/setup.sh
 
 # Or manually:
