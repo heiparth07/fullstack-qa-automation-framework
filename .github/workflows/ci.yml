@@ -138,8 +138,10 @@ jobs:
 
       - name: Build and serve frontend
         run: |
-          cd frontend && npm run build
-          npx serve -s dist -l 3000 &
+          cd frontend
+          npm run build
+          echo '{"rewrites": [{"source": "/api/**", "destination": "http://localhost:3001/api/:splat"}]}' > dist/serve.json
+          npx serve -s dist -l 3000 -c dist/serve.json &
           sleep 5
         env:
           VITE_API_URL: http://localhost:3001
