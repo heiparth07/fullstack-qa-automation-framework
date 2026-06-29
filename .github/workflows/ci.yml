@@ -138,16 +138,9 @@ jobs:
 
       - name: Build and serve frontend
         run: |
-          cd frontend
-          npm run build
-          echo '{"rewrites": [{"source": "/api/**", "destination": "http://localhost:3001/api/:splat"}]}' > dist/serve.json
-          npx serve -s dist -l 3000 -c dist/serve.json &
-          sleep 5
-        env:
-          VITE_API_URL: http://localhost:3001
-          REACT_APP_API_URL: http://localhost:3001
-          NEXT_PUBLIC_API_URL: http://localhost:3001
-          API_URL: http://localhost:3001
+          cd frontend && npm run build
+          npx serve -s dist -l 3000 &
+          sleep 3
 
       - name: Run UI tests (Chromium)
         run: npm -w tests run test:ui -- --project=chromium
@@ -201,12 +194,7 @@ jobs:
       - run: npm ci
 
       - name: Install k6
-        run: |
-          sudo gpg -k
-          sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D68
-          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
-          sudo apt-get update
-          sudo apt-get install k6
+        uses: grafana/setup-k6-action@v1
 
       - name: Initialize database
         run: psql -f docker/init-db/01-init.sql
