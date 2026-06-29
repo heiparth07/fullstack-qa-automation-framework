@@ -34,10 +34,12 @@ export default defineConfig({
       use: { ...devices['Desktop Safari'] },
     },
   ],
-  webServer: {
-    command: 'cd ../../ && npm run docker:up && docker compose -f docker/docker-compose.yml logs -f',
-    url: BASE_URL,
-    reuseExistingServer: true,
-    timeout: 120000,
-  },
+  webServer: process.env.CI
+  ? undefined
+  : {
+      command: 'cd ../../ && npm run docker:up && docker compose -f docker/docker-compose.yml logs -f',
+      url: BASE_URL,
+      reuseExistingServer: true,
+      timeout: 120000,
+    },
 });

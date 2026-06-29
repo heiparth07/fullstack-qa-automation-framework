@@ -140,7 +140,12 @@ jobs:
         run: |
           cd frontend && npm run build
           npx serve -s dist -l 3000 &
-          sleep 3
+          sleep 5
+        env:
+          VITE_API_URL: http://localhost:3001
+          REACT_APP_API_URL: http://localhost:3001
+          NEXT_PUBLIC_API_URL: http://localhost:3001
+          API_URL: http://localhost:3001
 
       - name: Run UI tests (Chromium)
         run: npm -w tests run test:ui -- --project=chromium
