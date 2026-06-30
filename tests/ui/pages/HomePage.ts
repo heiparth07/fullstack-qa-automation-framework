@@ -77,6 +77,10 @@ export class HomePage extends BasePage {
     return items.count();
   }
 
+  async expectTaskCount(expected: number): Promise<void> {
+  await expect(this.page.locator('.task-item')).toHaveCount(expected);
+  }
+
   async deleteTaskByTitle(title: string) {
     const taskItem = this.page.locator('.task-item', { hasText: title });
     this.page.on('dialog', (dialog) => dialog.accept());
@@ -92,12 +96,12 @@ export class HomePage extends BasePage {
 
   async filterByStatus(status: string) {
     await this.statusFilter.selectOption(status);
-    await this.waitForNetworkIdle();
+    await expect(this.loadingIndicator).toBeHidden();
   }
 
   async filterByPriority(priority: string) {
     await this.priorityFilter.selectOption(priority);
-    await this.waitForNetworkIdle();
+    await expect(this.loadingIndicator).toBeHidden();
   }
 
   async clickTaskTitle(title: string) {

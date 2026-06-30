@@ -29,6 +29,7 @@ export abstract class BasePage {
   }
 
   async waitForNetworkIdle() {
-    await this.page.waitForLoadState('networkidle');
+    const loading = this.page.getByTestId('loading-indicator');
+    await loading.waitFor({ state: 'hidden' }).catch(() => {});
   }
 }

@@ -55,12 +55,10 @@ test.describe('Task List & Filtering', () => {
     await homePage.goto();
 
     await homePage.filterByStatus('pending');
-    let count = await homePage.getTaskCount();
-    expect(count).toBe(1);
+    await homePage.expectTaskCount(1);
 
     await homePage.filterByStatus('');
-    count = await homePage.getTaskCount();
-    expect(count).toBe(2);
+    await homePage.expectTaskCount(2);
   });
 
   test('should navigate to task detail on title click', async ({ page, request }) => {
